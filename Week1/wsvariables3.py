@@ -1,0 +1,6 @@
+myvar = "halo"
+my_var = "halo"
+_my_var = "halo"
+myVar = "halo"
+MYVAR = "halo"
+myvar2 = "halo"

@@ -1,0 +1,97 @@
+import os
+import pygame
+
+pygame.init()
+screen = pygame.display.set_mode((400, 300))
+pygame.display.set_caption("Pygame Music Player")
+
+# Font setup for displaying song name
+font = pygame.font.Font(None, 18)  # None = default font, size 18
+
+# Better audio initialization
+pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
+
+# Use script directory for absolute paths
+script_dir = os.path.dirname(os.path.abspath(__file__))
+music_files = [
+    os.path.join(script_dir, f)
+    for f in os.listdir(script_dir)
+    if f.lower().endswith((".mp3", ".ogg"))
+]
+
+current_index = 0
+playing = False
+running = True
+
+def get_current_song_name():
+    """Return a clean display name for the current song."""
+    if not music_files:
+        return "No music files found"
+    full_path = music_files[current_index]
+    base = os.path.basename(full_path)
+    # Remove extension (e.g., .mp3)
+    name_without_ext = os.path.splitext(base)[0]
+    return name_without_ext
+
+if music_files:
+    try:
+        pygame.mixer.music.load(music_files[current_index])
+        print(f"Loaded: {music_files[current_index]}")
+    except pygame.error as e:
+        print(f"Failed to load: {e}")
+
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                if pygame.mixer.music.get_busy():
+                    pygame.mixer.music.pause()
+                    playing = False
+                else:
+                    if playing:
+                        pygame.mixer.music.unpause()
+                    else:
+                        pygame.mixer.music.play()
+                    playing = True
+            elif event.key == pygame.K_s:
+                pygame.mixer.music.stop()
+                playing = False
+            elif event.key == pygame.K_n and music_files:
+                current_index = (current_index + 1) % len(music_files)
+                pygame.mixer.music.load(music_files[current_index])
+                pygame.mixer.music.play()
+                playing = True
+            elif event.key == pygame.K_b and music_files:
+                current_index = (current_index - 1) % len(music_files)
+                pygame.mixer.music.load(music_files[current_index])
+                pygame.mixer.music.play()
+                playing = True
+
+    # --- Drawing ---
+    screen.fill((30, 30, 30))
+
+    # Render current song name
+    song_text = get_current_song_name()
+    text_surface = font.render(song_text, True, (255, 255, 255))  # White text
+    text_rect = text_surface.get_rect(center=(200, 150))          # Centered
+    screen.blit(text_surface, text_rect)
+
+    # Optional: Show status (Playing/Paused/Stopped)
+    if music_files:
+        if pygame.mixer.music.get_busy():
+            status = "Playing"
+        elif playing:
+            status = "Paused"
+        else:
+            status = "Stopped"
+    else:
+        status = "No music"
+    status_surface = font.render(status, True, (200, 200, 200))
+    status_rect = status_surface.get_rect(center=(200, 200))
+    screen.blit(status_surface, status_rect)
+
+    pygame.display.flip()
+
+pygame.quit()

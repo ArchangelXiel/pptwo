@@ -10,7 +10,7 @@ drawing = False
 last_pos = None
 color = (0, 0, 0)
 brush_size = 5
-mode = 'brush'  # modes: brush, rectangle, circle, eraser, square, right_triangle, equilateral_triangle, rhombus
+mode = 'brush'  
 
 canvas = pygame.Surface(screen.get_size())
 canvas.fill((255, 255, 255))

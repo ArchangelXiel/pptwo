@@ -9,7 +9,7 @@ WIDTH, HEIGHT = 700, 525
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 
-bg = pygame.image.load(r"C:\Users\archa\Desktop\pptwo\Lab 9\mickey.jpeg")
+bg = pygame.image.load(r"C:\Users\archa\Desktop\pptwo\Lab9\mickey.jpeg")
 bg = pygame.transform.scale(bg, (WIDTH, HEIGHT))
 
 center = (WIDTH // 2, HEIGHT // 2)
